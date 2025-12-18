@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.routes import radar
 from app.utils.config import config
 import asyncio
+import os
 
 app = FastAPI(title="Weather Radar API", version="1.0.0")
 
@@ -19,6 +21,10 @@ app.include_router(radar.router, prefix="/api/radar", tags=["radar"])
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
+
+frontend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "frontend", "dist")
+if os.path.exists(frontend_dir):
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
 @app.on_event("startup")
 async def startup_event():
