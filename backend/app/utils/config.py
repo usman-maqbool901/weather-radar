@@ -5,7 +5,7 @@ class Config:
     MRMS_RALA_PATH = "/2D/ReflectivityAtLowestAltitude/"
     UPDATE_INTERVAL = 5 * 60
     CACHE_TTL = 10 * 60
-    SERVER_PORT = int(os.getenv("PORT", 5001))
+    SERVER_PORT = int(os.getenv("PORT", 8000))
     CORS_ORIGINS = [
         "http://localhost:3000",
         "http://localhost:5173",
