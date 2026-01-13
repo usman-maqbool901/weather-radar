@@ -16,6 +16,13 @@ services:
       # Mount .env file if it exists (optional)
       - ./.env:/app/../.env:ro
     restart: unless-stopped
+    # Increase memory limit for GRIB2 parsing (needs more memory)
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
       interval: 30s
