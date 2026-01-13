@@ -53,10 +53,10 @@ python3 run.py
 
 Or with auto-reload for development:
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-The backend will run on `http://localhost:5001` by default (port 5000 is often used by macOS system processes).
+The backend will run on `http://localhost:8000` by default (port 8000 is often used by macOS system processes).
 
 ### Frontend Setup
 
@@ -78,7 +78,7 @@ cp .env.example .env
 4. Add your Mapbox token to `.env`:
 ```
 VITE_MAPBOX_TOKEN=your_mapbox_token_here
-VITE_API_URL=http://localhost:5001
+VITE_API_URL=http://localhost:8000
 ```
 
 5. Start the development server:

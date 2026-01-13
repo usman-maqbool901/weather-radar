@@ -24,6 +24,13 @@ const RadarMap = ({ data, mapboxToken }: RadarMapProps) => {
       setMapLoaded(true);
     });
 
+    map.current.on('error', (e) => {
+      console.error('Mapbox error:', e);
+      if (e.error?.message?.includes('Forbidden') || e.error?.message?.includes('401') || e.error?.message?.includes('403')) {
+        console.error('Mapbox token error: Token may have URL restrictions or missing scopes. Check MAPBOX_TOKEN_SETUP.md');
+      }
+    });
+
     return () => {
       if (map.current) {
         map.current.remove();
@@ -44,6 +51,16 @@ const RadarMap = ({ data, mapboxToken }: RadarMapProps) => {
       if (!map.current) return;
 
       try {
+        // Calculate bounds from data
+        const coordinates = data.features.map(f => f.geometry.coordinates);
+        const lons = coordinates.map(c => c[0]);
+        const lats = coordinates.map(c => c[1]);
+        const bounds = [
+          [Math.min(...lons), Math.min(...lats)],
+          [Math.max(...lons), Math.max(...lats)]
+        ] as [[number, number], [number, number]];
+
+        // Add or update source
         if (map.current.getSource(sourceId)) {
           const source = map.current.getSource(sourceId) as mapboxgl.GeoJSONSource;
           source.setData(data);
@@ -54,45 +71,77 @@ const RadarMap = ({ data, mapboxToken }: RadarMapProps) => {
           });
         }
 
+        // Remove existing layer if present
         if (map.current.getLayer(layerId)) {
           map.current.removeLayer(layerId);
         }
 
+        // Add circle layer
         map.current.addLayer({
           id: layerId,
-          type: 'heatmap',
+          type: 'circle',
           source: sourceId,
           paint: {
-            'heatmap-weight': [
+            'circle-radius': [
               'interpolate',
               ['linear'],
-              ['get', 'reflectivity'],
+              ['zoom'],
               0,
-              0.3,
+              2,
+              5,
+              4,
               10,
-              0.5,
-              20,
-              0.7,
-              30,
-              0.9,
-              40,
-              1,
+              8,
             ],
-            'heatmap-intensity': 5,
-            'heatmap-color': [
+            'circle-color': [
               'interpolate',
               ['linear'],
               ['get', 'reflectivity'],
               ...RADAR_COLORS.flat(),
             ],
-            'heatmap-radius': 80,
-            'heatmap-opacity': 1,
+            'circle-opacity': [
+              'interpolate',
+              ['linear'],
+              ['get', 'reflectivity'],
+              -10,
+              0.3,
+              0,
+              0.4,
+              10,
+              0.5,
+              20,
+              0.6,
+              30,
+              0.7,
+              40,
+              0.8,
+              50,
+              0.9,
+              60,
+              1,
+            ],
+            'circle-stroke-width': 0,
+            'circle-blur': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              0,
+              0.5,
+              5,
+              1,
+              10,
+              2,
+            ],
           },
         });
 
-        console.log(`✅ Heatmap layer added with ${data.features.length} points`);
+        // Fit map to data bounds with padding
+        map.current.fitBounds(bounds, {
+          padding: { top: 50, bottom: 50, left: 50, right: 50 },
+          maxZoom: 8,
+        });
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error setting up radar layer:', error);
       }
     };
 

@@ -16,7 +16,7 @@ python3 run.py
 
 Or using uvicorn directly:
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## API Endpoints
@@ -26,5 +26,5 @@ uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 
 ## Environment Variables
 
-- `PORT` - Server port (default: 5000)
+- `PORT` - Server port (default: 8000)
 

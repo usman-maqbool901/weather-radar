@@ -13,17 +13,17 @@ pip install -r requirements.txt
 python3 run.py
 ```
 
-The server will start on `http://localhost:5000`
+The server will start on `http://localhost:8000`
 
 ## Testing
 
 Test the API:
 ```bash
 # Health check
-curl http://localhost:5000/health
+curl http://localhost:8000/health
 
 # Get radar data (wait ~1 minute for first fetch)
-curl http://localhost:5000/api/radar/latest
+curl http://localhost:8000/api/radar/latest
 ```
 
 Or use the test script:
