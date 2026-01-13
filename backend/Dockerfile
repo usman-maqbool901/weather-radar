@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend application code
 COPY . .
 
+# Set environment variable to suppress ECCODES warnings
+ENV ECCODES_WARNINGS=0
+
 # Expose port
 EXPOSE 8000
 

@@ -11,12 +11,13 @@ services:
       - VITE_MAPBOX_TOKEN=${VITE_MAPBOX_TOKEN:-}
       - PORT=8000
       - MRMS_BASE_URL=${MRMS_BASE_URL:-https://mrms.ncep.noaa.gov/data}
+      - ECCODES_WARNINGS=0
     volumes:
       # Mount .env file if it exists (optional)
       - ./.env:/app/../.env:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://3.87.144.59:8000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -26,13 +27,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
     image: radar-frontend:latest
     container_name: radar-frontend
     ports:
       - "3000:3000"
-    environment:
-      - VITE_MAPBOX_TOKEN=${VITE_MAPBOX_TOKEN:-}
-      - VITE_API_URL=http://3.87.144.59:8000
     depends_on:
       - backend
     restart: unless-stopped
