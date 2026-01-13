@@ -6,7 +6,11 @@ Simple GRIB2 parser test using cfgrib/xarray (easier to install)
 import sys
 import json
 import gzip
+import os
 from pathlib import Path
+
+# Suppress ECCODES warnings about timestamp truncation
+os.environ['ECCODES_WARNINGS'] = '0'
 
 try:
     import cfgrib
