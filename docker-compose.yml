@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+        VITE_API_URL: ${VITE_API_URL:-http://3.87.144.59:8000}
     image: radar-frontend:latest
     container_name: radar-frontend
     ports:
